@@ -7,7 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4E4554B922795D9E00D21C0C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E4554B822795D9E00D21C0C /* main.cpp */; };
+		4E4554D82279611A00D21C0C /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4554D72279611A00D21C0C /* GLUT.framework */; };
+		4E4554DA2279611F00D21C0C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4554D92279611F00D21C0C /* OpenGL.framework */; };
+		4E4554DC2279612600D21C0C /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4554DB2279612600D21C0C /* libz.tbd */; };
+		4E4554DE2279613800D21C0C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4554DD2279613800D21C0C /* IOKit.framework */; };
+		4E4554E02279614200D21C0C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4554DF2279614200D21C0C /* GLKit.framework */; };
+		4E4554E22279614C00D21C0C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4554E12279614C00D21C0C /* Cocoa.framework */; };
+		4E4554E7227961FB00D21C0C /* libOpenMeshCore.7.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4554E3227961BF00D21C0C /* libOpenMeshCore.7.1.dylib */; };
+		4E4554E8227961FB00D21C0C /* libOpenMeshTools.7.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4554E4227961BF00D21C0C /* libOpenMeshTools.7.1.dylib */; };
+		4E4554F72279634E00D21C0C /* QualityViewer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4E4554EA2279634D00D21C0C /* QualityViewer.cc */; };
+		4E4554F82279634E00D21C0C /* SmoothingViewer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4E4554EB2279634D00D21C0C /* SmoothingViewer.cc */; };
+		4E4554F92279634E00D21C0C /* GlutExaminer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4E4554ED2279634D00D21C0C /* GlutExaminer.cc */; };
+		4E4554FA2279634E00D21C0C /* GlutViewer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4E4554F42279634E00D21C0C /* GlutViewer.cc */; };
+		4E4554FB2279634E00D21C0C /* smoother.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4E4554F52279634E00D21C0C /* smoother.cc */; };
+		4E4554FC2279634E00D21C0C /* MeshViewer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4E4554F62279634E00D21C0C /* MeshViewer.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +37,28 @@
 
 /* Begin PBXFileReference section */
 		4E4554B522795D9E00D21C0C /* MeshDOG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MeshDOG; sourceTree = BUILT_PRODUCTS_DIR; };
-		4E4554B822795D9E00D21C0C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		4E4554D72279611A00D21C0C /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		4E4554D92279611F00D21C0C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		4E4554DB2279612600D21C0C /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		4E4554DD2279613800D21C0C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		4E4554DF2279614200D21C0C /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		4E4554E12279614C00D21C0C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		4E4554E3227961BF00D21C0C /* libOpenMeshCore.7.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshCore.7.1.dylib; path = ../../../../../../usr/local/lib/libOpenMeshCore.7.1.dylib; sourceTree = "<group>"; };
+		4E4554E4227961BF00D21C0C /* libOpenMeshTools.7.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshTools.7.1.dylib; path = ../../../../../../usr/local/lib/libOpenMeshTools.7.1.dylib; sourceTree = "<group>"; };
+		4E4554E92279634D00D21C0C /* SmoothingViewer.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SmoothingViewer.hh; sourceTree = "<group>"; };
+		4E4554EA2279634D00D21C0C /* QualityViewer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QualityViewer.cc; sourceTree = "<group>"; };
+		4E4554EB2279634D00D21C0C /* SmoothingViewer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmoothingViewer.cc; sourceTree = "<group>"; };
+		4E4554EC2279634D00D21C0C /* QualityViewer.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QualityViewer.hh; sourceTree = "<group>"; };
+		4E4554ED2279634D00D21C0C /* GlutExaminer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlutExaminer.cc; sourceTree = "<group>"; };
+		4E4554EE2279634D00D21C0C /* MeshViewer.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MeshViewer.hh; sourceTree = "<group>"; };
+		4E4554EF2279634E00D21C0C /* cmake */ = {isa = PBXFileReference; lastKnownFileType = folder; path = cmake; sourceTree = "<group>"; };
+		4E4554F02279634E00D21C0C /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		4E4554F12279634E00D21C0C /* GlutExaminer.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GlutExaminer.hh; sourceTree = "<group>"; };
+		4E4554F22279634E00D21C0C /* GlutViewer.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GlutViewer.hh; sourceTree = "<group>"; };
+		4E4554F32279634E00D21C0C /* gl.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gl.hh; sourceTree = "<group>"; };
+		4E4554F42279634E00D21C0C /* GlutViewer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlutViewer.cc; sourceTree = "<group>"; };
+		4E4554F52279634E00D21C0C /* smoother.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = smoother.cc; sourceTree = "<group>"; };
+		4E4554F62279634E00D21C0C /* MeshViewer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshViewer.cc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +66,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E4554E7227961FB00D21C0C /* libOpenMeshCore.7.1.dylib in Frameworks */,
+				4E4554E8227961FB00D21C0C /* libOpenMeshTools.7.1.dylib in Frameworks */,
+				4E4554E22279614C00D21C0C /* Cocoa.framework in Frameworks */,
+				4E4554E02279614200D21C0C /* GLKit.framework in Frameworks */,
+				4E4554DE2279613800D21C0C /* IOKit.framework in Frameworks */,
+				4E4554DC2279612600D21C0C /* libz.tbd in Frameworks */,
+				4E4554DA2279611F00D21C0C /* OpenGL.framework in Frameworks */,
+				4E4554D82279611A00D21C0C /* GLUT.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +85,7 @@
 			children = (
 				4E4554B722795D9E00D21C0C /* MeshDOG */,
 				4E4554B622795D9E00D21C0C /* Products */,
+				4E4554D62279611900D21C0C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +100,37 @@
 		4E4554B722795D9E00D21C0C /* MeshDOG */ = {
 			isa = PBXGroup;
 			children = (
-				4E4554B822795D9E00D21C0C /* main.cpp */,
+				4E4554EF2279634E00D21C0C /* cmake */,
+				4E4554F02279634E00D21C0C /* CMakeLists.txt */,
+				4E4554F32279634E00D21C0C /* gl.hh */,
+				4E4554ED2279634D00D21C0C /* GlutExaminer.cc */,
+				4E4554F12279634E00D21C0C /* GlutExaminer.hh */,
+				4E4554F42279634E00D21C0C /* GlutViewer.cc */,
+				4E4554F22279634E00D21C0C /* GlutViewer.hh */,
+				4E4554F62279634E00D21C0C /* MeshViewer.cc */,
+				4E4554EE2279634D00D21C0C /* MeshViewer.hh */,
+				4E4554EA2279634D00D21C0C /* QualityViewer.cc */,
+				4E4554EC2279634D00D21C0C /* QualityViewer.hh */,
+				4E4554F52279634E00D21C0C /* smoother.cc */,
+				4E4554EB2279634D00D21C0C /* SmoothingViewer.cc */,
+				4E4554E92279634D00D21C0C /* SmoothingViewer.hh */,
 			);
 			path = MeshDOG;
+			sourceTree = "<group>";
+		};
+		4E4554D62279611900D21C0C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4E4554E3227961BF00D21C0C /* libOpenMeshCore.7.1.dylib */,
+				4E4554E4227961BF00D21C0C /* libOpenMeshTools.7.1.dylib */,
+				4E4554E12279614C00D21C0C /* Cocoa.framework */,
+				4E4554DF2279614200D21C0C /* GLKit.framework */,
+				4E4554DD2279613800D21C0C /* IOKit.framework */,
+				4E4554DB2279612600D21C0C /* libz.tbd */,
+				4E4554D92279611F00D21C0C /* OpenGL.framework */,
+				4E4554D72279611A00D21C0C /* GLUT.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,7 +189,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4E4554B922795D9E00D21C0C /* main.cpp in Sources */,
+				4E4554F82279634E00D21C0C /* SmoothingViewer.cc in Sources */,
+				4E4554FB2279634E00D21C0C /* smoother.cc in Sources */,
+				4E4554F92279634E00D21C0C /* GlutExaminer.cc in Sources */,
+				4E4554F72279634E00D21C0C /* QualityViewer.cc in Sources */,
+				4E4554FC2279634E00D21C0C /* MeshViewer.cc in Sources */,
+				4E4554FA2279634E00D21C0C /* GlutViewer.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +316,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/usr/local/include/GL,
+					/usr/local/include/OpenMesh,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -248,6 +331,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/usr/local/include/GL,
+					/usr/local/include/OpenMesh,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
