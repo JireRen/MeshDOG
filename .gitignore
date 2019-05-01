@@ -1,0 +1,9 @@
+# Xcode
+## Build generated
+build/
+DerivedData/
+MeshDOG-gksezdecwzkhacfazvxgkweiwigg/
+ModuleCache.noindex/
+## Various settings
+*.pbxuser
+xcuserdata/
