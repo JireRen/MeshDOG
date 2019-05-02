@@ -91,8 +91,19 @@ protected:
     OpenMesh::EPropHandleT<Mesh::Scalar>  eweight_;
     OpenMesh::FPropHandleT<Mesh::Scalar>  tshape_;
     
+    //== MeshDOG ===============================================================
     
-
+    /// initialize MeshDOG feature
+    void init_meshdog();
+    
+    /// detect MeshDOG feature
+    void detect_meshdog(int _iters);
+    
+    /// gaussian convolution
+    float gaussian_conv(float _edge_length, float _theta);
+    
+    /// vertex handle for MeshDOG scalar value f
+    OpenMesh::VPropHandleT<Mesh::Scalar> vmeshdog_f_, vmeshdog_dog_, veavg_, vgaussianconv_;
     GLuint  textureID_;
 };
 

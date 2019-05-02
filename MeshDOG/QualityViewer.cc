@@ -41,7 +41,7 @@
 #include "QualityViewer.hh"
 #include <vector>
 #include <float.h>
-
+#include <math.h>
 //== IMPLEMENTATION ========================================================== 
 
 QualityViewer::QualityViewer(const char* _title, int _width, int _height)
@@ -62,8 +62,15 @@ QualityViewer::QualityViewer(const char* _title, int _width, int _height)
     add_draw_mode("Triangle Shape");
     add_draw_mode("Reflection Lines");
     
-    // == MeshDOG ============================================================
+    //== MeshDOG ============================================================
+    /// add display mode
     add_draw_mode("MeshDOG");
+    
+    /// add vertex property
+    mesh_.add_property(vmeshdog_f_);
+    mesh_.add_property(vmeshdog_dog_);
+    mesh_.add_property(veavg_);
+    mesh_.add_property(vgaussianconv_);
 
     init();
 }
@@ -135,6 +142,10 @@ bool QualityViewer::open_mesh(const char* _filename)
         calc_gauss_curvature();
         calc_triangle_quality();
         face_color_coding();
+        
+        //==MeshDOG============================================================
+        init_meshdog();
+        detect_meshdog(10);
 
         glutPostRedisplay();
         return true;
@@ -614,5 +625,96 @@ void QualityViewer::draw(const std::string& _draw_mode)
     else MeshViewer::draw(_draw_mode);
 }
 
+
+// == MeshDOG ==================================================================
+//-----------------------------------------------------------------------------
+
+void QualityViewer::init_meshdog()
+{
+    // ------------- IMPLEMENT HERE ---------
+    // initialize the MeshDOG
+    // a). initialize the vmesh_ value to mean curvature
+    // ------------- IMPLEMENT HERE ---------
+    
+    // initialize the value to some type of curvature
+    Mesh::VertexIter v_it, v_end(mesh_.vertices_end());
+    Mesh::VertexVertexIter vv_it;
+    Mesh::Scalar eavg;
+    Mesh::Point v0, v1;
+    int valence;
+    
+    for (v_it = mesh_.vertices_begin(); v_it != v_end; ++v_it)
+    {
+        // initialize the vmeshdog_ value to curvature
+        mesh_.property(vmeshdog_f_, v_it) = mesh_.property(vcurvature_, v_it);
+        valence = 0; eavg = 0;
+        v0 = mesh_.point( v_it );
+        
+        // calculate e_avg for each vertex
+        for (vv_it = mesh_.vv_iter( v_it ); vv_it; ++vv_it)
+        {
+            v1 = mesh_.point( vv_it );
+            valence++;
+            eavg += (v0 - v1).norm();
+        }
+        
+        // delete single points
+        if (valence == 0)
+            mesh_.delete_vertex(v_it);
+        else
+            mesh_.property(veavg_, v_it) = eavg / valence;
+    }
+    
+}
+
+
+//-----------------------------------------------------------------------------
+void QualityViewer::detect_meshdog(int _iters)
+{
+    // ------------- IMPLEMENT HERE ---------
+    // detect MeshDOG feature
+    // b). gaussian convolution
+    // c). thresholding, top 5% will be sorted
+    // d). corner detection
+    // ------------- IMPLEMENT HERE ---------
+    Mesh::VertexIter v_it, v_end(mesh_.vertices_end());
+    Mesh::VertexVertexIter vv_it;
+    Mesh::Scalar f0,f1, dog1, dog2;
+    Mesh::Point vi, vj;
+    float theta, K;
+    
+    // perform gaussian convolution
+    for (v_it = mesh_.vertices_begin(); v_it != v_end; ++ v_it)
+    {
+        theta = mesh_.property(veavg_, v_it);
+        f0 = mesh_.property(vmeshdog_f_, v_it);
+        vi = mesh_.point(v_it);
+        theta = pow(2, 1.0/3.0) * mesh_.property(veavg_, v_it);
+//        for (int i = 0; i < _iters; ++i)
+//        {
+//
+//        }
+        for (vv_it = mesh_.vv_iter(v_it); vv_it; ++vv_it)
+        {
+            vj = mesh_.point(vv_it);
+            std::cout<<gaussian_conv((vi - vj).norm(), theta)<<std::endl;
+        }
+    }
+    
+}
+
+//-----------------------------------------------------------------------------
+float QualityViewer::gaussian_conv(float _edge_length, float _theta)
+{
+    // ------------- IMPLEMENT HERE ---------
+    // helper function for gaussian conv
+    // return k(||vivj||) of the paper
+    // ------------- IMPLEMENT HERE ---------
+
+    float k;
+    k = exp(-pow(_edge_length, 2) / (2 * pow(_theta, 2)))
+    / (_theta * sqrt(2 * M_PI));
+    return k;
+}
 
 //=============================================================================
