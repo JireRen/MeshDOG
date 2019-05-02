@@ -63,8 +63,12 @@ QualityViewer::QualityViewer(const char* _title, int _width, int _height)
     add_draw_mode("Reflection Lines");
     
     //== MeshDOG ============================================================
+    /// request vertex status, if not, *.ply format will throw seg fault
+    mesh_.request_vertex_status();
     /// add display mode
     add_draw_mode("MeshDOG");
+    add_draw_mode("MeshDOG curvature");
+    add_draw_mode("MeshDOG curvature DOG");
     
     /// add vertex property
     mesh_.add_property(vmeshdog_f_);
@@ -503,8 +507,13 @@ void QualityViewer::draw(const std::string& _draw_mode)
     if (_draw_mode == "Mean Curvature") color_coding(vcurvature_);
     if (_draw_mode == "Gaussian Curvature") color_coding(vgausscurvature_);
     if (_draw_mode == "Uniform Mean Curvature") color_coding(vunicurvature_);
-
-    if (_draw_mode == "Mean Curvature" || _draw_mode == "Gaussian Curvature" || _draw_mode == "Uniform Mean Curvature")
+    
+    //== MeshDOG ============================================================
+    if (_draw_mode == "MeshDOG curvature") color_coding(vmeshdog_f_);
+    if (_draw_mode == "MeshDOG curvature DOG") color_coding(vmeshdog_dog_);
+    //-----------------------------------------------------------------------
+    
+    if (_draw_mode == "Mean Curvature" || _draw_mode == "Gaussian Curvature" || _draw_mode == "Uniform Mean Curvature" || _draw_mode == "MeshDOG curvature" || _draw_mode == "MeshDOG curvature DOG")
     {
 
         glDisable(GL_LIGHTING);
@@ -625,10 +634,9 @@ void QualityViewer::draw(const std::string& _draw_mode)
     else MeshViewer::draw(_draw_mode);
 }
 
-
-// == MeshDOG ==================================================================
 //-----------------------------------------------------------------------------
 
+// == MeshDOG ==================================================================
 void QualityViewer::init_meshdog()
 {
     // ------------- IMPLEMENT HERE ---------
@@ -641,12 +649,12 @@ void QualityViewer::init_meshdog()
     Mesh::VertexVertexIter vv_it;
     Mesh::Scalar eavg;
     Mesh::Point v0, v1;
-    int valence;
+    int valence = 0;
     
     for (v_it = mesh_.vertices_begin(); v_it != v_end; ++v_it)
     {
         // initialize the vmeshdog_ value to curvature
-        mesh_.property(vmeshdog_f_, v_it) = mesh_.property(vcurvature_, v_it);
+        mesh_.property(vmeshdog_f_, v_it) = mesh_.property(vunicurvature_, v_it);
         valence = 0; eavg = 0;
         v0 = mesh_.point( v_it );
         
@@ -659,12 +667,15 @@ void QualityViewer::init_meshdog()
         }
         
         // delete single points
+        // techniquely not actually delete it, just set the f(v_i) to 0
         if (valence == 0)
-            mesh_.delete_vertex(v_it);
+            mesh_.property(vmeshdog_f_, v_it) = 0;
+            //mesh_.delete_vertex(v_it);
         else
             mesh_.property(veavg_, v_it) = eavg / valence;
     }
     
+    //mesh_.garbage_collection();
 }
 
 
@@ -679,26 +690,39 @@ void QualityViewer::detect_meshdog(int _iters)
     // ------------- IMPLEMENT HERE ---------
     Mesh::VertexIter v_it, v_end(mesh_.vertices_end());
     Mesh::VertexVertexIter vv_it;
-    Mesh::Scalar f0,f1, dog1, dog2;
+    Mesh::Scalar f0, f1(0);
     Mesh::Point vi, vj;
-    float theta, K;
+    float theta, k, K(0);
     
     // perform gaussian convolution
+    for (int i = 0; i < _iters; ++ i)
+    {
+        for (v_it = mesh_.vertices_begin(); v_it != v_end; ++ v_it)
+        {
+            theta = mesh_.property(veavg_, v_it);
+            f0 = mesh_.property(vmeshdog_f_, v_it);
+            f1 = 0;
+            vi = mesh_.point(v_it);
+            theta = pow(2, 1.0/3.0) * mesh_.property(veavg_, v_it);
+            
+            for (vv_it = mesh_.vv_iter(v_it); vv_it; ++vv_it)
+            {
+                vj = mesh_.point(vv_it);
+                k = gaussian_conv((vi - vj).norm(), theta); K += k;
+                f1 += mesh_.property(vmeshdog_f_, vv_it) * k;
+                //std::cout<<gaussian_conv((vi - vj).norm(), theta)<<std::endl;
+            }
+            f1 = f1 / K;
+            
+            mesh_.property(vmeshdog_dog_, v_it) = f1 - f0;
+            mesh_.property(vmeshdog_f_, v_it) = f1;
+        }
+    }
+    
+    // debug
     for (v_it = mesh_.vertices_begin(); v_it != v_end; ++ v_it)
     {
-        theta = mesh_.property(veavg_, v_it);
-        f0 = mesh_.property(vmeshdog_f_, v_it);
-        vi = mesh_.point(v_it);
-        theta = pow(2, 1.0/3.0) * mesh_.property(veavg_, v_it);
-//        for (int i = 0; i < _iters; ++i)
-//        {
-//
-//        }
-        for (vv_it = mesh_.vv_iter(v_it); vv_it; ++vv_it)
-        {
-            vj = mesh_.point(vv_it);
-            std::cout<<gaussian_conv((vi - vj).norm(), theta)<<std::endl;
-        }
+        std::cout<< mesh_.property(vmeshdog_dog_, v_it) << std::endl;
     }
     
 }
