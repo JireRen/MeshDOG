@@ -104,6 +104,9 @@ protected:
     
     /// vertex handle for MeshDOG scalar value f
     OpenMesh::VPropHandleT<Mesh::Scalar> vmeshdog_f_, vmeshdog_dog_, veavg_, vgaussianconv_;
+    
+    /// the detected feature points
+    std::vector<int> _dog_feature_points;
     GLuint  textureID_;
 };
 

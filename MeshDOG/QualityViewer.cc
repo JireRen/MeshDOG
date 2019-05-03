@@ -42,6 +42,7 @@
 #include <vector>
 #include <float.h>
 #include <math.h>
+#include <algorithm>
 //== IMPLEMENTATION ========================================================== 
 
 QualityViewer::QualityViewer(const char* _title, int _width, int _height)
@@ -69,6 +70,7 @@ QualityViewer::QualityViewer(const char* _title, int _width, int _height)
     add_draw_mode("MeshDOG");
     add_draw_mode("MeshDOG curvature");
     add_draw_mode("MeshDOG curvature DOG");
+    add_draw_mode("MeshDOG feature points");
     
     /// add vertex property
     mesh_.add_property(vmeshdog_f_);
@@ -149,7 +151,7 @@ bool QualityViewer::open_mesh(const char* _filename)
         
         //==MeshDOG============================================================
         init_meshdog();
-        detect_meshdog(10);
+        detect_meshdog(20);
 
         glutPostRedisplay();
         return true;
@@ -630,6 +632,20 @@ void QualityViewer::draw(const std::string& _draw_mode)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glDisableClientState(GL_VERTEX_ARRAY);
     }
+    else if (_draw_mode == "MeshDOG feature points")
+    {
+        // draw points
+        glDisable(GL_LIGHTING);
+        glColor3f(0, 1.0, 0);
+        glPointSize(5.0);
+        
+        glEnableClientState(GL_VERTEX_ARRAY);
+        GL::glVertexPointer(mesh_.points());
+        
+        glDrawElements(GL_POINTS, static_cast<GLsizei>(_dog_feature_points.size()), GL_UNSIGNED_INT, &_dog_feature_points[0]);
+        
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
 
     else MeshViewer::draw(_draw_mode);
 }
@@ -669,7 +685,8 @@ void QualityViewer::init_meshdog()
         // delete single points
         // techniquely not actually delete it, just set the f(v_i) to 0
         if (valence == 0)
-            mesh_.property(vmeshdog_f_, v_it) = 0;
+            //mesh_.property(vmeshdog_f_, v_it) = 0;
+            std::cout<<mesh_.property(vcurvature_, v_it)<<std::endl;
             //mesh_.delete_vertex(v_it);
         else
             mesh_.property(veavg_, v_it) = eavg / valence;
@@ -688,42 +705,79 @@ void QualityViewer::detect_meshdog(int _iters)
     // c). thresholding, top 5% will be sorted
     // d). corner detection
     // ------------- IMPLEMENT HERE ---------
-    Mesh::VertexIter v_it, v_end(mesh_.vertices_end());
-    Mesh::VertexVertexIter vv_it;
-    Mesh::Scalar f0, f1(0);
-    Mesh::Point vi, vj;
-    float theta, k, K(0);
+    Mesh::VertexIter            v_it, v_end(mesh_.vertices_end());
+    Mesh::VertexVertexIter      vv_it;
+    Mesh::Scalar                f0, f1(0);
+    Mesh::Point                 vi, vj;
+    float                       theta, k, K(0);
     
     // perform gaussian convolution
     for (int i = 0; i < _iters; ++ i)
     {
         for (v_it = mesh_.vertices_begin(); v_it != v_end; ++ v_it)
         {
-            theta = mesh_.property(veavg_, v_it);
-            f0 = mesh_.property(vmeshdog_f_, v_it);
-            f1 = 0;
-            vi = mesh_.point(v_it);
-            theta = pow(2, 1.0/3.0) * mesh_.property(veavg_, v_it);
-            
-            for (vv_it = mesh_.vv_iter(v_it); vv_it; ++vv_it)
+            // check if the vertex is a single point
+            if (!isnan(mesh_.property(vcurvature_, v_it)))
             {
-                vj = mesh_.point(vv_it);
-                k = gaussian_conv((vi - vj).norm(), theta); K += k;
-                f1 += mesh_.property(vmeshdog_f_, vv_it) * k;
-                //std::cout<<gaussian_conv((vi - vj).norm(), theta)<<std::endl;
+                theta = mesh_.property(veavg_, v_it);
+                f0 = mesh_.property(vmeshdog_f_, v_it);
+                f1 = 0; K = 0;
+                vi = mesh_.point(v_it);
+                theta = pow(2, 1.0/3.0) * mesh_.property(veavg_, v_it);
+                
+                for (vv_it = mesh_.vv_iter(v_it); vv_it; ++vv_it)
+                {
+                    vj = mesh_.point(vv_it);
+                    k = gaussian_conv((vi - vj).norm(), theta); K += k;
+                    f1 += mesh_.property(vmeshdog_f_, vv_it) * k;
+                    //std::cout<<gaussian_conv((vi - vj).norm(), theta)<<std::endl;
+                }
+                f1 = f1 / K;
+                
+                mesh_.property(vmeshdog_dog_, v_it) = f1 - f0;
+                mesh_.property(vmeshdog_f_, v_it) = f1;
             }
-            f1 = f1 / K;
-            
-            mesh_.property(vmeshdog_dog_, v_it) = f1 - f0;
-            mesh_.property(vmeshdog_f_, v_it) = f1;
         }
     }
     
     // debug
-    for (v_it = mesh_.vertices_begin(); v_it != v_end; ++ v_it)
+//    for (v_it = mesh_.vertices_begin(); v_it != v_end; ++ v_it)
+//    {
+//        std::cout<< mesh_.property(vmeshdog_dog_, v_it) << std::endl;
+//    }
+    
+    // thresholding
+    std::vector<Mesh::Scalar>   vec_dog;
+    Mesh::Scalar                threshold;
+    std::vector<Mesh::VIter>    vec_viter;
+    //std::vector<int>            dog_feature_points;
+    int thresh_index = int(mesh_.n_vertices() * 0.95);
+    
+    for (v_it = mesh_.vertices_begin(); v_it != v_end; ++v_it)
     {
-        std::cout<< mesh_.property(vmeshdog_dog_, v_it) << std::endl;
+        vec_dog.push_back(mesh_.property(vmeshdog_dog_, v_it));
     }
+    
+    std::sort(vec_dog.begin(), vec_dog.end());
+    threshold = vec_dog[thresh_index];
+    
+    _dog_feature_points.clear();
+    
+    for( v_it = mesh_.vertices_begin(); v_it != v_end; ++v_it)
+    {
+        // if DOG exists and above threshold
+        if (!isnan(mesh_.property(vcurvature_, v_it)) && mesh_.property(vmeshdog_dog_, v_it) >= threshold)
+        {
+            _dog_feature_points.push_back(v_it.handle().idx());
+        }
+    }
+    
+    // debug
+    std::cout<<"Detected "<<_dog_feature_points.size()<<" feature points"<<std::endl;
+    
+    // corner detection
+    Mesh::Scalar dxx, dyy;
+    
     
 }
 
