@@ -57,6 +57,9 @@ public:
 
     /// open mesh
     virtual bool open_mesh(const char* _filename);
+    
+    ///== MeshDOG =============================================================
+    int _iters;
 
 protected:
 

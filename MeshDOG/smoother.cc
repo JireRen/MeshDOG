@@ -35,12 +35,17 @@
 
 int main(int argc, char **argv)
 {
+  
   glutInit(&argc, argv);
 
-  SmoothingViewer window("Smoothing", 512, 512);
-    
+  SmoothingViewer window("MeshDOG", 512, 512);
+  
+  std::cout<< "MeshDOG /path/to/mehs [num of iters]"<<std::endl;
   if (argc>1)
+  {
+    window._iters = std::atoi(argv[2]);
     window.open_mesh(argv[1]);
+  }
 
   glutMainLoop();
 }

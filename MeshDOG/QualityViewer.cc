@@ -77,6 +77,9 @@ QualityViewer::QualityViewer(const char* _title, int _width, int _height)
     mesh_.add_property(vmeshdog_dog_);
     mesh_.add_property(veavg_);
     mesh_.add_property(vgaussianconv_);
+    
+    /// default num of iters for gaussian conv
+    _iters = 10;
 
     init();
 }
@@ -151,7 +154,7 @@ bool QualityViewer::open_mesh(const char* _filename)
         
         //==MeshDOG============================================================
         init_meshdog();
-        detect_meshdog(20);
+        detect_meshdog(_iters);
 
         glutPostRedisplay();
         return true;
