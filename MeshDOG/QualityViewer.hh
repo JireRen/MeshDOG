@@ -105,12 +105,20 @@ protected:
     /// gaussian convolution
     float gaussian_conv(float _edge_length, float _theta);
     
+    /// save the feature points to a mesh
+    void save_meshdog();
+    
     /// vertex handle for MeshDOG scalar value f
     OpenMesh::VPropHandleT<Mesh::Scalar> vmeshdog_f_, vmeshdog_dog_, veavg_, vgaussianconv_;
     
     /// the detected feature points
     std::vector<int> _dog_feature_points;
+    std::vector<Mesh::VertexHandle> _dog_feature_handles;
     GLuint  textureID_;
+    
+    // new mesh for MeshDOG feature points
+    // OpenMesh::TriMesh_ArrayKernelT<>
+    Mesh new_mesh;
 };
 
 

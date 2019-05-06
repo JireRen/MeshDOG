@@ -43,6 +43,8 @@
 #include <float.h>
 #include <math.h>
 #include <algorithm>
+
+#include <OpenMesh/Core/IO/MeshIO.hh>
 //== IMPLEMENTATION ========================================================== 
 
 QualityViewer::QualityViewer(const char* _title, int _width, int _height)
@@ -155,6 +157,7 @@ bool QualityViewer::open_mesh(const char* _filename)
         //==MeshDOG============================================================
         init_meshdog();
         detect_meshdog(_iters);
+        save_meshdog();
 
         glutPostRedisplay();
         return true;
@@ -765,6 +768,7 @@ void QualityViewer::detect_meshdog(int _iters)
     threshold = vec_dog[thresh_index];
     
     _dog_feature_points.clear();
+    _dog_feature_handles.clear();
     
     for( v_it = mesh_.vertices_begin(); v_it != v_end; ++v_it)
     {
@@ -772,6 +776,7 @@ void QualityViewer::detect_meshdog(int _iters)
         if (!isnan(mesh_.property(vcurvature_, v_it)) && mesh_.property(vmeshdog_dog_, v_it) >= threshold)
         {
             _dog_feature_points.push_back(v_it.handle().idx());
+            _dog_feature_handles.push_back(v_it.handle());
         }
     }
     
@@ -796,6 +801,25 @@ float QualityViewer::gaussian_conv(float _edge_length, float _theta)
     k = exp(-pow(_edge_length, 2) / (2 * pow(_theta, 2)))
     / (_theta * sqrt(2 * M_PI));
     return k;
+}
+
+//-----------------------------------------------------------------------------
+void QualityViewer::save_meshdog()
+{
+    Mesh::Point p;
+    Mesh::VertexHandle vh;
+    std::vector<Mesh::VertexHandle>::iterator iter;
+    
+    for(iter = _dog_feature_handles.begin(); iter != _dog_feature_handles.end(); ++iter)
+    {
+        vh = *iter;
+        p = mesh_.point(vh);
+        new_mesh.add_vertex(p);
+    }
+    
+    // save mesh to file
+    if ( !OpenMesh::IO::write_mesh(new_mesh, "dog_points.ply" ))
+        std::cout<<"Failed to save the mesh!"<<std::endl;
 }
 
 //=============================================================================

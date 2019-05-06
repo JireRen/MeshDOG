@@ -66,7 +66,6 @@ public:
   /// draw the scene
   virtual void draw(const std::string& _draw_mode);
   
-
 protected:
 
   typedef OpenMesh::TriMesh_ArrayKernelT<>  Mesh;
