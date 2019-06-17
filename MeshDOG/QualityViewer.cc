@@ -785,7 +785,8 @@ void QualityViewer::detect_meshdog(int _iters)
     
     // corner detection
     Mesh::Scalar dxx, dyy;
-    
+    // conrner detection is not necessary for this project
+    // TODO
     
 }
 
